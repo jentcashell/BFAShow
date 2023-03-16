@@ -8,7 +8,6 @@ let r2 = 0;
 
 
 let sketch = function(p) {
-  
     p.preload = function() {
     eyeL = p.loadImage("alienpiece03.png");
     eyeR = p.loadImage("alienpiece01.png");
