@@ -1,98 +1,104 @@
-let capture;
-let w = 640;
-let h = 480;
-let model;
-let face;
-let eye
+// Face detection with mediapipe
+// https://google.github.io/mediapipe/solutions/face_detection.html
 
-function preload(){
-  eyeL = loadImage("eyeR.png");
-  eyeR = loadImage("eyeL.png");
-  lips = loadImage("botchedlips.png")
-  hands = loadImage("hands.png")
-  
-}
+let eyeL, eyeR;
+let bg;
+let r1 = 0;
+let r2 = 0;
 
-function setup() {
-  createCanvas(w, h);
-  capture = createCapture(VIDEO);
-  capture.size(w, h);
-  capture.hide();
-  
-  loadFaceModel();
-}
 
-function draw() {
-  background(220);
-
-  push();
-    translate(width, 0);
-    scale(-1, 1);
-    image(capture, 0, 0);
-  imageMode(CORNERS);
-  pop();
+let sketch = function(p) {
   
-  image(hands, 0, 230, );
-  
-  if(capture.loadedmetadata && model !== undefined) {
-    getFace();
-    loop();
+    p.preload = function() {
+    eyeL = p.loadImage("alienpiece03.png");
+    eyeR = p.loadImage("alienpiece01.png");
+      bg = p.loadImage("wc frame 01@2x.png");
   }
+
+  p.setup = function() {
+    p.createCanvas(cam_w, cam_h);
+    p.rectMode(p.CENTER);
+    p.imageMode(p.CENTER);
+    p.angleMode(p.DEGREES);
+  }
+
+  p.draw = function() {
+    p.clear(0);
+    
+    p.image(bg, cam_w/2,cam_h/2, cam_w, cam_h);
   
-  if(face !== undefined) {
-    let rightEye = createVector(w-face.landmarks[0][0], face.landmarks[0][1]);
-    let leftEye = createVector(w-face.landmarks[1][0], face.landmarks[1][1]);
-    let mouth = createVector(w-face.landmarks[3][0], face.landmarks[3][1]);
-    let d= dist(rightEye.x, rightEye.y, leftEye.x, leftEye.y);
-    let size = map(d, 20, 180, 1, 200);
+    if(detections != undefined) {
+      if(detections.detections != undefined) {
+        p.drawFaces();
+        //console.log(detections.detections);
+        
+//         let rightEye = createVector(p.width-face.landmarks[0][0], face.landmarks[0][1]);
+//     let leftEye = createVector(p.width-face.landmarks[1][0], face.landmarks[1][1]);
+//     //let mouth = createVector(p.width-face.landmarks[3][0], face.landmarks[3][1]);
+//     let d= dist(rightEye.x, rightEye.y, leftEye.x, leftEye.y);
+//     let size = map(d, 20, 180, 1, 200);
+        
+      }
+    }
     
-    //imageMode(CENTER);
-    image(eyeR,rightEye.x-size/2, rightEye.y-size/2, size, size);
-    image(eyeL,leftEye.x-size/2, leftEye.y-size/2, size, size);
-    image(lips,mouth.x-size/2, mouth.y-size/2, size, size);
+  }
 
-    
-    
+  p.drawFaces = function() {
+    p.strokeWeight(8);
 
-    for(let lm of face.landmarks)
-    {
-      lm = createVector(w-lm[0], lm[1]);
+    for(let i = 0; i < detections.detections.length; i++) {
+
+      // it's not necessary to create this boundingBox variable, but it makes for less typing and neater coder
+     // const boundingBox = detections.detections[i].boundingBox;
+//       p.noStroke();
+//       p.fill(255, 0, 255, 80);
+//       p.rect(p.width-boundingBox.xCenter*p.width, boundingBox.yCenter*p.height, boundingBox.width * p.width, boundingBox.height * p.height);
+//      //p.image(eyeL, 0, 0);
+
+//       p.stroke(0, 255, 0);
+      // for(let j = 0; j < detections.detections[i].landmarks.length; j++) {
+      //   const facePoint = detections.detections[i].landmarks[j];
+      //   const x = p.width - (facePoint.x * p.width);
+      //   const y = facePoint.y * p.height;
+      //   p.point(x, y);
+      //   //p.image(eyeL, x, y, 300, 300);
+      //   console.log(facePoint);
+      // }
       
-      noStroke();
-      fill(0, 255, 0);
-      rect(lm.x, lm.y, 10, 10);
+      
+      
+      const eyeLeft = detections.detections[i].landmarks[5];
+        const x1 = p.width - (eyeLeft.x * p.width);
+        const y1 = eyeLeft.y * p.height;
+      
+      
+      const eyeRight = detections.detections[i].landmarks[2];
+        const x2 = p.width - (eyeRight.x * p.width);
+        const y2 = eyeRight.y * p.height;
+      
+      let d = p.dist(eyeRight.x, eyeRight.y, eyeLeft.x, eyeLeft.y);
+      //let d = dist(x1,y1,x2,y2);
+      let size = p.map(d, 0, 1, 1, 200);
+      //console.log(d);
+      
+      p.push();
+      p.translate(x1, y1);
+      p.rotate(r1);
+      p.image(eyeL, 0, 0, size*10 +20, size*10 +20);
+      p.pop();
+      
+      p.push();
+      p.translate(x2, y2);
+      p.rotate(r2);
+      p.image(eyeR, 0, 0, size*10, size*10);
+      p.pop();
+      
+      r1+= 10;
+      r2+= 2;
+      
+      //console.log(detections.detections.length)
     }
   }
 }
 
-
-async function getFace() {
-  
-  // predictions is an array of all the faces detected by the model
-  const predictions = await model.estimateFaces(document.querySelector('video'), false);
-  
-  // if no faces, make face undefined
-  if(predictions.length == 0) {
-    face = undefined;
-  } else {
-    face = predictions[0];
-  }
-}
-
-
-async function loadFaceModel() {
-  model = await blazeface.load();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
+let myp5 = new p5(sketch)
