@@ -12,7 +12,7 @@ let sketch = function(p) {
     p.preload = function() {
     eyeL = p.loadImage("alienpiece03.png");
     eyeR = p.loadImage("alienpiece01.png");
-      bg = p.loadImage("wc frame 01@2x.png");
+      bg = p.loadImage("wc_frame.png");
   }
 
   p.setup = function() {
