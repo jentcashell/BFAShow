@@ -22,6 +22,7 @@ canvas {
   transform: scale(-0.75, 0.75);
   object-position: 50% 50%;
   filter: blur(3px) hue-rotate(0deg) contrast(100%);
+  animation: hueAnim 5s infinite linear;
 }
 .ccGAN01{
   z-index: -1;
@@ -37,4 +38,9 @@ canvas {
   z-index: -2;
   object-position: center center;
   transform: scale(1.5);
+}
+
+@keyframes hueAnim{
+  0%{filter: hue-rotate(0deg);}
+  100%{filter: hue-rotate(360deg);}
 }
