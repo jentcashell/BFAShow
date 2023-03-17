@@ -1,6 +1,6 @@
 * {margin: 0; padding: 0; box-sizing: border-box;}
 
-canvas, video {
+canvas, video, .frame {
   display: block;
   position: absolute;
   
@@ -44,3 +44,13 @@ canvas {
   0%{filter: hue-rotate(0deg);}
   100%{filter: hue-rotate(360deg);}
 }
+.frame{
+  object-position: 52% 50%;
+  animation: blurAnim 2s infinite;
+  z-index: 5;
+}
+ @keyframes blurAnim{
+  0%{filter:blur(0);}
+  50%{filter:blur(5px);}
+  100%{filter:blur(0);}
+ }

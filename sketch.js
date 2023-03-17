@@ -5,13 +5,15 @@ let eyeL, eyeR;
 let bg;
 let r1 = 0;
 let r2 = 0;
+let r3 = 0;
 
 
 let sketch = function(p) {
     p.preload = function() {
     eyeL = p.loadImage("alienpiece03.png");
     eyeR = p.loadImage("alienpiece01.png");
-      bg = p.loadImage("wc_frame.png");
+    mouth = p.loadImage("alienpiece02.png");
+      //bg = p.loadImage("wc_frame.png");
   }
 
   p.setup = function() {
@@ -24,7 +26,7 @@ let sketch = function(p) {
   p.draw = function() {
     p.clear(0);
     
-    p.image(bg, cam_w/2,cam_h/2, cam_w, cam_h);
+    //p.image(bg, cam_w/2,cam_h/2, cam_w, cam_h);
   
     if(detections != undefined) {
       if(detections.detections != undefined) {
@@ -75,6 +77,11 @@ let sketch = function(p) {
         const x2 = p.width - (eyeRight.x * p.width);
         const y2 = eyeRight.y * p.height;
       
+        const theMouth = detections.detections[i].landmarks[0];
+        const x3 = p.width - (theMouth.x * p.width);
+        const y3 = theMouth.y * p.height;
+      
+      
       let d = p.dist(eyeRight.x, eyeRight.y, eyeLeft.x, eyeLeft.y);
       //let d = dist(x1,y1,x2,y2);
       let size = p.map(d, 0, 1, 1, 200);
@@ -83,18 +90,34 @@ let sketch = function(p) {
       p.push();
       p.translate(x1, y1);
       p.rotate(r1);
-      p.image(eyeL, 0, 0, size*10 +20, size*10 +20);
+      p.image(eyeL, 0, 0, size*15 +20, size*15 +20);
       p.pop();
       
       p.push();
       p.translate(x2, y2);
       p.rotate(r2);
-      p.image(eyeR, 0, 0, size*10, size*10);
+      p.image(eyeR, 0, 0, size*15, size*15);
       p.pop();
+
+      p.push();
+      p.translate(x3, y3);
+      p.rotate(r3);
+      p.image(mouth, 500, 0, size*15, size*15);
+      p.pop();
+
+      for(let xx = 0; xx ++; x<4){
+        p.push();
+        p.translate(x3+200, y3);
+        p.rotate(r3);
+        p.image(mouth, 0, 0, size*15, size*15);
+        p.pop();
+      }
       
       r1+= 10;
       r2+= 2;
+      r3+= 5;
       
+
       //console.log(detections.detections.length)
     }
   }
