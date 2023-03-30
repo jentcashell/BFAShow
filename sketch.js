@@ -54,16 +54,16 @@ let sketch = function(p) {
     //   p.rect(p.width-boundingBox.xCenter*p.width, boundingBox.yCenter*p.height, boundingBox.width * p.width, boundingBox.height * p.height);
     //  //p.image(eyeL, 0, 0);
     
-    imgsRandom = p.random(imgs);
-    console.log(imgsRandom);
-    p.stroke(0, 255, 0);
-    for(let j = 0; j < detections.detections[i].landmarks.length; j++) {
-      const facePoint = detections.detections[i].landmarks[j];
-      const x = p.width - (facePoint.x * p.width);
-      const y = facePoint.y * p.height;
-      p.image(imgsRandom,x, y,p.width/6,p.width/6);
-      p.vertex(x,y);
-    }
+    // imgsRandom = p.random(imgs);
+    // console.log(imgsRandom);
+    // p.stroke(0, 255, 0);
+    // for(let j = 0; j < detections.detections[i].landmarks.length; j++) {
+    //   const facePoint = detections.detections[i].landmarks[j];
+    //   const x = p.width - (facePoint.x * p.width);
+    //   const y = facePoint.y * p.height;
+    //   p.image(imgsRandom,x, y,p.width/6,p.width/6);
+    //   p.vertex(x,y);
+    // }
       
       const eyeLeft = detections.detections[i].landmarks[5];
         const x1 = p.width - (eyeLeft.x * p.width);
